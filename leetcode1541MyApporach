@@ -1,0 +1,51 @@
+class Solution {
+    public int minInsertions(String s) {
+                char lastChar = '(';
+        ArrayDeque<Integer> stack = new ArrayDeque<>();
+        stack.addLast(0);
+        for(int i=0;i < s.length();i++){
+            if(s.charAt(i)==lastChar){
+                int no = stack.removeLast();
+                stack.addLast(no+1);
+            }else{
+                lastChar = s.charAt(i);
+                stack.addLast(1);
+            }
+        }
+
+        int sidhaBracketExtra = 0;
+        int insertion = 0;
+
+        int count = 0;
+        while(!stack.isEmpty()){
+            int freq = stack.removeFirst();
+            if(count % 2 ==0){   //sidha Bracket
+                sidhaBracketExtra += freq;
+            }else{  //cloasing bracket
+                if(freq%2==0){
+                    if(2*sidhaBracketExtra >= freq){
+                        sidhaBracketExtra = sidhaBracketExtra - freq/2;
+                    }else{
+                        freq = freq - 2*sidhaBracketExtra;
+                        sidhaBracketExtra = 0;
+                        insertion += freq/2;
+                    }
+                }else{
+                    if(2*sidhaBracketExtra>=freq){
+                        sidhaBracketExtra = sidhaBracketExtra - freq/2 - 1;
+                        insertion++;
+                    }else{
+                        freq = freq - 2*sidhaBracketExtra;
+                        sidhaBracketExtra = 0;
+                        insertion = insertion + freq/2 + 2;
+                    }
+                }
+            }
+            count++;
+        }
+
+        insertion += 2*sidhaBracketExtra;
+        return insertion;
+
+    }
+}
